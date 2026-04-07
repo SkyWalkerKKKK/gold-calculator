@@ -79,7 +79,6 @@
             display: block;
         }
 
-        /* 区域标题 */
         .section-title {
             font-size: 1.1rem;
             font-weight: 700;
@@ -105,7 +104,6 @@
             margin-bottom: 24px;
         }
 
-        /* 标签样式 - 独立色块 */
         label {
             display: flex;
             align-items: center;
@@ -129,7 +127,6 @@
             font-size: 1.2rem;
         }
 
-        /* 输入框样式 */
         .input-wrapper {
             display: flex;
             border: 2px solid #e0e0e0;
@@ -217,7 +214,7 @@
                 transform: translateY(-10px);
             }
             to {
-                opacity: 1;
+                opacity: 0;
                 transform: translateY(0);
             }
         }
@@ -314,12 +311,72 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('average')">📊 均价计算</button>
-            <button class="tab-btn" onclick="switchTab('london')">🌍 伦敦金转换</button>
+            <button class="tab-btn active" onclick="switchTab('london')">🌍 伦敦金转换</button>
+            <button class="tab-btn" onclick="switchTab('average')">📊 均价计算</button>
+        </div>
+
+        <!-- 伦敦金转换 Tab（默认显示） -->
+        <div id="london-tab" class="tab-content active">
+            <div class="card">
+                <div class="formula">
+                    <strong>公式：</strong>国内价 = 伦敦价 × 汇率 ÷ 31.1035 &nbsp;|&nbsp; 伦敦价 = 国内价 × 31.1035 ÷ 汇率
+                </div>
+
+                <div class="rate-info" id="rate-info">
+                    <p>💡 点击计算按钮自动获取最新汇率</p>
+                </div>
+
+                <div class="section-title current">🌍 伦敦金 → 国内金</div>
+
+                <div class="form-group">
+                    <label class="label-current">
+                        <span class="label-icon">🌍</span>
+                        伦敦金价格
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="london-price" placeholder="例如：2650" step="0.01">
+                        <span class="unit">USD/oz</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculateLondonToCNY()">转换国内金价</button>
+
+                <div class="loading" id="london-loading">
+                    <div class="spinner"></div>
+                    <p>正在获取实时汇率...</p>
+                </div>
+
+                <div class="result" id="london-result">
+                    <div class="result-label">国内金价</div>
+                    <div class="result-value" id="london-value">--</div>
+                    <div class="result-detail" id="london-detail"></div>
+                </div>
+
+                <div class="section-title buy" style="margin-top: 30px;">🇨🇳 国内金 → 伦敦金</div>
+
+                <div class="form-group">
+                    <label class="label-buy">
+                        <span class="label-icon">🇨🇳</span>
+                        国内金价
+                    </label>
+                    <div class="input-wrapper buy">
+                        <input type="number" id="cny-price" placeholder="例如：600" step="0.01">
+                        <span class="unit">元/克</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculateCNYToLondon()">转换伦敦金价</button>
+
+                <div class="result" id="cny-result" style="background: linear-gradient(135deg, #f5a623 0%, #d48806 100%);">
+                    <div class="result-label">伦敦金价</div>
+                    <div class="result-value" id="cny-value">--</div>
+                    <div class="result-detail" id="cny-detail"></div>
+                </div>
+            </div>
         </div>
 
         <!-- 均价计算 Tab -->
-        <div id="average-tab" class="tab-content active">
+        <div id="average-tab" class="tab-content">
             <div class="card">
                 <div class="formula">
                     <strong>公式：</strong>买入后均价 = (当前均价 × 当前克数 + 买入金价 × 买入克数) ÷ (当前克数 + 买入克数)
@@ -379,66 +436,6 @@
                     <div class="result-label">买入后均价</div>
                     <div class="result-value" id="average-value">--</div>
                     <div class="result-detail" id="average-detail"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 伦敦金转换 Tab -->
-        <div id="london-tab" class="tab-content">
-            <div class="card">
-                <div class="formula">
-                    <strong>公式：</strong>国内价 = 伦敦价 × 汇率 ÷ 31.1035 &nbsp;|&nbsp; 伦敦价 = 国内价 × 31.1035 ÷ 汇率
-                </div>
-
-                <div class="rate-info" id="rate-info">
-                    <p>💡 点击计算按钮自动获取最新汇率</p>
-                </div>
-
-                <div class="section-title current">🌍 伦敦金 → 国内金</div>
-
-                <div class="form-group">
-                    <label class="label-current">
-                        <span class="label-icon">🌍</span>
-                        伦敦金价格
-                    </label>
-                    <div class="input-wrapper">
-                        <input type="number" id="london-price" placeholder="例如：2650" step="0.01">
-                        <span class="unit">USD/oz</span>
-                    </div>
-                </div>
-
-                <button class="btn" onclick="calculateLondonToCNY()">转换国内金价</button>
-
-                <div class="loading" id="london-loading">
-                    <div class="spinner"></div>
-                    <p>正在获取实时汇率...</p>
-                </div>
-
-                <div class="result" id="london-result">
-                    <div class="result-label">国内金价</div>
-                    <div class="result-value" id="london-value">--</div>
-                    <div class="result-detail" id="london-detail"></div>
-                </div>
-
-                <div class="section-title buy" style="margin-top: 30px;">🇨🇳 国内金 → 伦敦金</div>
-
-                <div class="form-group">
-                    <label class="label-buy">
-                        <span class="label-icon">🇨🇳</span>
-                        国内金价
-                    </label>
-                    <div class="input-wrapper buy">
-                        <input type="number" id="cny-price" placeholder="例如：600" step="0.01">
-                        <span class="unit">元/克</span>
-                    </div>
-                </div>
-
-                <button class="btn" onclick="calculateCNYToLondon()">转换伦敦金价</button>
-
-                <div class="result" id="cny-result" style="background: linear-gradient(135deg, #f5a623 0%, #d48806 100%);">
-                    <div class="result-label">伦敦金价</div>
-                    <div class="result-value" id="cny-value">--</div>
-                    <div class="result-detail" id="cny-detail"></div>
                 </div>
             </div>
         </div>
@@ -520,7 +517,6 @@
                 return data.rates.CNY;
             } catch (error) {
                 console.error('获取汇率失败:', error);
-                // 备用汇率（如果 API 失败）
                 return 7.25;
             }
         }
@@ -541,13 +537,10 @@
             loadingDiv.classList.add('show');
             resultDiv.classList.remove('show');
 
-            // 获取实时汇率
             const exchangeRate = await getExchangeRate();
 
             loadingDiv.classList.remove('show');
 
-            // 计算：伦敦金 (USD/oz) → 人民币/克
-            // 1 盎司 = 31.1035 克
             const cnyPerGram = (londonPrice * exchangeRate) / 31.1035;
 
             rateInfoDiv.innerHTML = `<p>💱 实时汇率：<strong>1 USD = ${exchangeRate.toFixed(4)} CNY</strong></p>`;
@@ -581,11 +574,8 @@
 
             resultDiv.classList.remove('show');
 
-            // 获取实时汇率
             const exchangeRate = await getExchangeRate();
 
-            // 计算：人民币/克 → 伦敦金 (USD/oz)
-            // 公式：伦敦价 = 国内价 × 31.1035 ÷ 汇率
             const londonPrice = (cnyPrice * 31.1035) / exchangeRate;
 
             rateInfoDiv.innerHTML = `<p>💱 实时汇率：<strong>1 USD = ${exchangeRate.toFixed(4)} CNY</strong></p>`;
@@ -605,7 +595,6 @@
             saveData();
         }
 
-        // 页面加载时恢复数据
         window.onload = loadSavedData;
     </script>
 </body>
