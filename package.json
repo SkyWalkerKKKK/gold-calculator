@@ -5,7 +5,11 @@
   "description": "由 OpenClaw AI 驱动生成的实用小工具集合",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-index.mjs"
+    "build": "node scripts/build-index.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "3.99.0"
   },
   "engines": {
     "node": ">=18"
