@@ -1,63 +1,96 @@
 # 🛠️ Useful Tools
 
-> 由 [OpenClaw](https://docs.openclaw.ai) AI 驱动生成的实用小工具集合。
+由 [OpenClaw AI](https://github.com/SkyWalkerKKKK) 驱动生成的实用小工具集合。每个工具是根目录下的一个独立子目录，互不干扰。
 
-## 📦 项目简介
-
-这个仓库汇集了一系列由 OpenClaw 智能体从零开始设计并实现的前端实用工具。每个工具都采用纯 HTML + CSS + JavaScript 构建，无需任何框架依赖，打开即用，开箱即食。
-
-**核心理念**：让 AI 帮我们写那些"有用但懒得自己写"的小工具。
+在线访问：**https://useful-tools.pages.dev** （部署后替换为实际地址）
 
 ---
 
-## 🧰 工具列表
+## ✨ 特性
 
-### 💰 Gold Price Calculator — 金价计算器
-
-一个精致的黄金价格实时换算工具，支持多种单位和重量计算。
-
-| 功能 | 说明 |
-|------|------|
-| 💱 多币种支持 | 人民币、美元等主流货币 |
-| ⚖️ 多单位换算 | 克、盎司、两等常见黄金计量单位 |
-| 📊 实时参考 | 基于国际金价自动计算 |
-| 📱 响应式设计 | 手机、平板、桌面端完美适配 |
-
-👉 [打开金价计算器](gold-calculator/index.html)
+- 🧩 **工具独立**：每个工具一个目录，自带 `index.html`，零耦合。
+- 🔁 **首页自动生成**：无需手动维护首页卡片，push 后自动刷新。
+- 🎨 **统一暗色风格**：首页卡片样式统一，每个工具按名称自动配色。
+- 🔍 **内置搜索**：按名称 / 描述 / 标签实时过滤。
+- ☁️ **Cloudflare Pages**：免费、免备案、push 即部署。
 
 ---
 
-## 🚀 如何使用
+## 📁 目录结构
 
-1. 克隆仓库到本地：
-   ```bash
-   git clone https://github.com/SkyWalkerKKKK/useful-tools.git
+```
+useful-tools/
+├── scripts/
+│   └── build-index.mjs     # 构建脚本：扫描工具并生成首页
+├── gold-calculator/        # 工具 1：金价计算器
+│   ├── index.html
+│   └── tool.json           # 可选：工具元数据
+├── qrcode/                 # 工具 2（示例）：将来新增
+│   ├── index.html
+│   └── tool.json
+├── package.json
+└── README.md
+```
+
+---
+
+## ➕ 新增一个工具（3 步）
+
+1. **在根目录新建一个目录**，名字用连字符小写英文，例如 `color-picker/`
+2. **在目录里放一个 `index.html`**，工具的所有资源都用**相对路径**引用（`./style.css`，不要 `/style.css`）
+3. **（推荐）放一个 `tool.json`** 描述工具，让首页卡片更好看：
+
+   ```json
+   {
+     "name": "取色器",
+     "icon": "🎨",
+     "desc": "从图片或屏幕任意位置提取颜色，支持 HEX / RGB / HSL。",
+     "tags": ["Design", "Color"]
+   }
    ```
-2. 直接在浏览器中打开对应的 `index.html` 文件即可使用
-3. 或者部署到任意静态托管服务（GitHub Pages、Vercel、Netlify 等）
 
-**无需安装任何依赖，无需构建步骤。**
+完成。`git push` 后 Cloudflare 会自动重新构建，首页会自动出现新卡片，无需改动任何其它文件。
 
----
-
-## 🤖 关于 OpenClaw
-
-[OpenClaw](https://docs.openclaw.ai) 是一个强大的 AI Agent 平台，能够通过自然语言对话驱动 AI 完成复杂的编程任务。本项目中的所有工具均由 OpenClaw 智能体独立完成：
-
-- ✅ 需求理解与方案设计
-- ✅ UI/UX 设计与实现
-- ✅ 前端代码编写与调试
-- ✅ 响应式布局适配
-- ✅ 代码审查与优化
+> 没有 `tool.json` 也能工作：脚本会用目录名做标题、🔧 做图标。
 
 ---
 
-## 📝 License
+## 🔧 本地预览
 
-MIT License - 随意使用，开心就好。
+```bash
+# 1. 生成首页
+npm run build
+
+# 2. 本地起服务预览（任选其一）
+npx serve .
+# 或
+python -m http.server 8080
+```
 
 ---
 
-<p align="center">
-  Made with 🤖 by OpenClaw • Built with ❤️ by <a href="https://github.com/SkyWalkerKKKK">SkyWalkerKKKK</a>
-</p>
+## ☁️ 部署到 Cloudflare Pages
+
+| 配置项 | 值 |
+|------|------|
+| 框架预设 | 无（None） |
+| 构建命令 | `npm run build` |
+| 构建输出目录 | `.`（根目录，一个点） |
+| 生产分支 | `main` |
+
+详见 [DEPLOY.md](#) 或仓库 Wiki。
+
+---
+
+## 📜 约定
+
+- **目录命名**：连字符小写英文，如 `gold-calculator`、`qrcode-gen`
+- **资源路径**：一律使用**相对路径**，避免在子路径下 404
+- **公共资源**：需要共享的 CSS / JS 放 `shared/` 目录（不会被当作工具）
+- **跳过的目录**：`node_modules`、`scripts`、`assets`、`shared`、`public`、`dist`、`.git`、`.github`、所有 `.` 开头的目录
+
+---
+
+## 📄 License
+
+MIT
