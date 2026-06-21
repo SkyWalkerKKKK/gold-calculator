@@ -1,1 +1,8 @@
 .DS_Store
+
+# 构建产物（由 scripts/build-index.mjs 自动生成）
+dist/
+node_modules/
+
+# Wrangler 本地缓存
+.wrangler/

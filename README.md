@@ -61,24 +61,26 @@ useful-tools/
 # 1. 生成首页
 npm run build
 
-# 2. 本地起服务预览（任选其一）
-npx serve .
+# 2. 本地起服务预览（在 dist/ 目录下）
+npx serve dist
 # 或
-python -m http.server 8080
+cd dist && python -m http.server 8080
 ```
 
 ---
 
-## ☁️ 部署到 Cloudflare Pages
+## ☁️ 部署到 Cloudflare（Workers Builds）
+
+仓库已配好 `wrangler.jsonc`，构建脚本会把网站文件输出到 `dist/`。
 
 | 配置项 | 值 |
 |------|------|
-| 框架预设 | 无（None） |
 | 构建命令 | `npm run build` |
-| 构建输出目录 | `.`（根目录，一个点） |
+| 部署命令 | `npx wrangler deploy`（默认，无需改） |
+| 环境变量 | `NODE_VERSION` = `22` |
 | 生产分支 | `main` |
 
-详见 [DEPLOY.md](#) 或仓库 Wiki。
+部署目录、静态资源等都在 `wrangler.jsonc` 里声明，无需在面板重复配置。
 
 ---
 

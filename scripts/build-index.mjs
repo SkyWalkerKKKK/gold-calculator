@@ -28,6 +28,9 @@ const SKIP_DIRS = new Set([
   '.github',
 ]);
 
+// 构建产物输出目录（只含网站文件，不含源码）
+const OUT_DIR = 'dist';
+
 // ---------- 工具函数 ----------
 
 // 目录名转人类可读标题：gold-calculator -> "Gold Calculator"
@@ -257,13 +260,40 @@ function escapeAttr(s) {
   return escapeHtml(s).replace(/"/g, '&quot;');
 }
 
+// ---------- 文件拷贝（递归）----------
+
+function copyDir(src, dest) {
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const s = path.join(src, entry.name);
+    const d = path.join(dest, entry.name);
+    if (entry.isDirectory()) copyDir(s, d);
+    else fs.copyFileSync(s, d);
+  }
+}
+
 // ---------- 主流程 ----------
 
 const tools = discoverTools();
 const html = renderPage(tools);
-const outPath = path.join(ROOT, 'index.html');
-fs.writeFileSync(outPath, html, 'utf8');
 
-console.log(`✅ 首页已生成：${path.relative(ROOT, outPath)}`);
-console.log(`   共发现 ${tools.length} 个工具：`);
+// 清空并重建 dist/ 目录
+const outRoot = path.join(ROOT, OUT_DIR);
+fs.rmSync(outRoot, { recursive: true, force: true });
+fs.mkdirSync(outRoot, { recursive: true });
+
+// 写入首页
+fs.writeFileSync(path.join(outRoot, 'index.html'), html, 'utf8');
+
+// 拷贝每个工具目录
+for (const tool of tools) {
+  copyDir(path.join(ROOT, tool.path), path.join(outRoot, tool.path));
+}
+
+// 如果有 shared/ 公共资源目录，也一并拷贝
+const sharedDir = path.join(ROOT, 'shared');
+if (fs.existsSync(sharedDir)) copyDir(sharedDir, path.join(outRoot, 'shared'));
+
+console.log(`✅ 构建完成，产物输出到 ${OUT_DIR}/`);
+console.log(`   共 ${tools.length} 个工具：`);
 tools.forEach((t) => console.log(`   - ${t.icon}  ${t.name}  (/${t.path}/)`));
