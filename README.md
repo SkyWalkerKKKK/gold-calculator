@@ -69,18 +69,19 @@ cd dist && python -m http.server 8080
 
 ---
 
-## ☁️ 部署到 Cloudflare（Workers Builds）
+## ☁️ 部署到 Cloudflare Pages
 
-仓库已配好 `wrangler.jsonc`，构建脚本会把网站文件输出到 `dist/`。
+构建脚本会把网站文件输出到 `dist/`，Pages 直接部署这个目录即可。
 
 | 配置项 | 值 |
 |------|------|
+| 框架预设 | 无（None） |
 | 构建命令 | `npm run build` |
-| 部署命令 | `npx wrangler deploy`（默认，无需改） |
-| 环境变量 | `NODE_VERSION` = `22` |
+| 构建输出目录 | `dist` |
+| 环境变量 | `NODE_VERSION` = `18`（可选） |
 | 生产分支 | `main` |
 
-部署目录、静态资源等都在 `wrangler.jsonc` 里声明，无需在面板重复配置。
+部署后访问 `https://<项目名>.pages.dev`。
 
 ---
 
